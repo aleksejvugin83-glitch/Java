@@ -1,0 +1,209 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// Родительский класс Студент
+class Student {
+    protected String recordBookNumber;
+    protected String lastName;
+    protected String firstName;
+    protected String group;
+    protected String department;
+    protected String discipline;
+    protected int grade;
+    protected String teacherLastName;
+    
+    public Student(String recordBookNumber, String lastName, String firstName, 
+                   String group, String department, String discipline, 
+                   int grade, String teacherLastName) {
+        this.recordBookNumber = recordBookNumber;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.group = group;
+        this.department = department;
+        this.discipline = discipline;
+        this.grade = grade;
+        this.teacherLastName = teacherLastName;
+    }
+    
+    public void printInfo() {
+        System.out.println("Зачетка: " + recordBookNumber);
+        System.out.println("ФИО: " + lastName + " " + firstName);
+        System.out.println("Группа: " + group);
+        System.out.println("Кафедра: " + department);
+        System.out.println("Дисциплина: " + discipline);
+        System.out.println("Оценка: " + grade);
+        System.out.println("Преподаватель: " + teacherLastName);
+    }
+}
+
+// Дочерний класс Очное отделение
+class FullTimeStudent extends Student {
+    private int egeScore;
+    private double averageCertificateScore;
+    
+    public FullTimeStudent(String recordBookNumber, String lastName, String firstName, 
+                          String group, String department, String discipline, 
+                          int grade, String teacherLastName, 
+                          int egeScore, double averageCertificateScore) {
+        super(recordBookNumber, lastName, firstName, group, department, 
+              discipline, grade, teacherLastName);
+        this.egeScore = egeScore;
+        this.averageCertificateScore = averageCertificateScore;
+    }
+    
+    @Override
+    public void printInfo() {
+        super.printInfo();
+        System.out.println("Тип: Очное отделение");
+        System.out.println("Балл ЕГЭ: " + egeScore);
+        System.out.println("Средний балл аттестата: " + averageCertificateScore);
+        System.out.println("------------------------");
+    }
+}
+
+// Дочерний класс Заочное отделение
+class PartTimeStudent extends Student {
+    private String workplace;
+    private String position;
+    private double tuitionFee;
+    
+    public PartTimeStudent(String recordBookNumber, String lastName, String firstName, 
+                          String group, String department, String discipline, 
+                          int grade, String teacherLastName, 
+                          String workplace, String position, double tuitionFee) {
+        super(recordBookNumber, lastName, firstName, group, department, 
+              discipline, grade, teacherLastName);
+        this.workplace = workplace;
+        this.position = position;
+        this.tuitionFee = tuitionFee;
+    }
+    
+    @Override
+    public void printInfo() {
+        super.printInfo();
+        System.out.println("Тип: Заочное отделение");
+        System.out.println("Место работы: " + workplace);
+        System.out.println("Должность: " + position);
+        System.out.println("Сумма обучения: " + tuitionFee + " руб.");
+        System.out.println("------------------------");
+    }
+}
+
+// Дочерний класс Целевое обучение
+class TargetedStudent extends Student {
+    private String targetEnterprise;
+    private double tuitionFee;
+    
+    public TargetedStudent(String recordBookNumber, String lastName, String firstName, 
+                          String group, String department, String discipline, 
+                          int grade, String teacherLastName, 
+                          String targetEnterprise, double tuitionFee) {
+        super(recordBookNumber, lastName, firstName, group, department, 
+              discipline, grade, teacherLastName);
+        this.targetEnterprise = targetEnterprise;
+        this.tuitionFee = tuitionFee;
+    }
+    
+    @Override
+    public void printInfo() {
+        super.printInfo();
+        System.out.println("Тип: Целевое обучение");
+        System.out.println("Целевое предприятие: " + targetEnterprise);
+        System.out.println("Сумма обучения: " + tuitionFee + " руб.");
+        System.out.println("------------------------");
+    }
+}
+
+// Класс для хранения списка студентов
+class StudentList {
+    private List<Student> students;
+    
+    public StudentList() {
+        students = new ArrayList<>();
+    }
+    
+    // Метод добавления нового студента
+    public void addStudent(Student student) {
+        students.add(student);
+        System.out.println("Студент добавлен в список!");
+    }
+    
+    // Метод печати списка студентов
+    public void printAllStudents() {
+        if (students.isEmpty()) {
+            System.out.println("Список студентов пуст.");
+            return;
+        }
+        
+        System.out.println("\n========== СПИСОК СТУДЕНТОВ ==========");
+        for (int i = 0; i < students.size(); i++) {
+            System.out.println("Студент #" + (i + 1));
+            students.get(i).printInfo();
+        }
+    }
+    
+    // Дополнительный метод: получение количества студентов
+    public int getStudentCount() {
+        return students.size();
+    }
+}
+
+// Главный класс программы
+public class UniversityManagement {
+    public static void main(String[] args) {
+        // Создаем список студентов
+        StudentList studentList = new StudentList();
+        
+        // Создаем студентов разных типов
+        FullTimeStudent fullTimeStudent1 = new FullTimeStudent(
+            "2023001", "Иванов", "Иван", "ИТ-101", 
+            "Информационные технологии", "Программирование", 
+            5, "Петров", 285, 4.8
+        );
+        
+        FullTimeStudent fullTimeStudent2 = new FullTimeStudent(
+            "2023002", "Смирнова", "Анна", "ИТ-101", 
+            "Информационные технологии", "Базы данных", 
+            4, "Сидорова", 270, 4.5
+        );
+        
+        PartTimeStudent partTimeStudent = new PartTimeStudent(
+            "2023003", "Козлов", "Петр", "ЗИТ-201", 
+            "Экономика", "Маркетинг", 
+            4, "Иванова", 
+            "ООО 'Ромашка'", "Менеджер", 50000.0
+        );
+        
+        TargetedStudent targetedStudent = new TargetedStudent(
+            "2023004", "Соколова", "Мария", "ЦИТ-301", 
+            "Машиностроение", "Механика", 
+            5, "Васильев", 
+            "АО 'Завод имени Петрова'", 75000.0
+        );
+        
+        // Добавляем студентов в список
+        studentList.addStudent(fullTimeStudent1);
+        studentList.addStudent(fullTimeStudent2);
+        studentList.addStudent(partTimeStudent);
+        studentList.addStudent(targetedStudent);
+        
+        // Выводим информацию о всех студентах
+        studentList.printAllStudents();
+        
+        // Выводим общее количество студентов
+        System.out.println("Всего студентов в системе: " + studentList.getStudentCount());
+        
+        // Пример добавления еще одного студента
+        System.out.println("\n--- Добавление нового студента ---");
+        FullTimeStudent newStudent = new FullTimeStudent(
+            "2023005", "Новиков", "Алексей", "ИТ-102", 
+            "Информационные технологии", "Алгоритмы", 
+            5, "Кузнецов", 290, 4.9
+        );
+        studentList.addStudent(newStudent);
+        
+        // Снова выводим обновленный список
+        studentList.printAllStudents();
+        System.out.println("Всего студентов в системе: " + studentList.getStudentCount());
+    }
+}

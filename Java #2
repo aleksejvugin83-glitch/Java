@@ -1,0 +1,33 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class MatrixMinRowStream {
+    public static void main(String[] args) {
+        Random random = new Random();
+        
+        // Фиксированные размеры (если ввод с консоли недоступен)
+        int rows = 3;
+        int cols = 4;
+        
+        // Создание и заполнение матрицы случайными значениями
+        int[][] matrix = new int[rows][cols];
+        
+        System.out.println("Сгенерированная матрица " + rows + "x" + cols + ":");
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j] = random.nextInt(100);
+                System.out.printf("%4d", matrix[i][j]);
+            }
+            System.out.println();
+        }
+        
+        // Создание вектора B с использованием Stream API
+        int[] vectorB = Arrays.stream(matrix)
+                .mapToInt(row -> Arrays.stream(row).min().orElse(0))
+                .toArray();
+        
+        // Вывод результата
+        System.out.println("\nВектор B (минимальные значения в каждой строке):");
+        System.out.println(Arrays.toString(vectorB));
+    }
+}

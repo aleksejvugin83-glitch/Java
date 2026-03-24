@@ -1,0 +1,145 @@
+import java.util.Objects;
+
+public class Show {
+    // Свойства класса
+    private String author;      // ведущий
+    private String name;        // название
+    private String description; // описание
+    private int periodType;     // периодичность (1-ежедневно, 2-еженедельно, 3-ежемесячно)
+    
+    // Конструктор
+    public Show(String author, String name, String description, int periodType) {
+        this.author = author;
+        this.name = name;
+        this.description = description;
+        setPeriodType(periodType); // Используем сеттер для валидации
+    }
+    
+    // Геттеры
+    public String getAuthor() {
+        return author;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public int getPeriodType() {
+        return periodType;
+    }
+    
+    public String getPeriodTypeAsString() {
+        switch (periodType) {
+            case 1: return "ежедневно";
+            case 2: return "еженедельно";
+            case 3: return "ежемесячно";
+            default: return "неизвестно";
+        }
+    }
+    
+    // Сеттеры
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public void setPeriodType(int periodType) {
+        if (periodType >= 1 && periodType <= 3) {
+            this.periodType = periodType;
+        } else {
+            throw new IllegalArgumentException("Периодичность должна быть от 1 до 3");
+        }
+    }
+    
+    // Переопределение метода toString()
+    @Override
+    public String toString() {
+        return String.format(
+            "=== ТЕЛЕПЕРЕДАЧА ===\n" +
+            "Название:      %s\n" +
+            "Ведущий:       %s\n" +
+            "Описание:      %s\n" +
+            "Периодичность: %s (%d)\n" +
+            "====================",
+            name, author, description, getPeriodTypeAsString(), periodType
+        );
+    }
+    
+    // Переопределение equals() и hashCode() для корректного сравнения объектов
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Show show = (Show) o;
+        return periodType == show.periodType &&
+               Objects.equals(author, show.author) &&
+               Objects.equals(name, show.name) &&
+               Objects.equals(description, show.description);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, name, description, periodType);
+    }
+    
+    // Дополнительный метод для демонстрации работы класса
+    public void displayInfo() {
+        System.out.println(this);
+    }
+    
+    // Главный метод для тестирования
+    public static void main(String[] args) {
+        // Создание объектов с помощью конструктора
+        Show show1 = new Show("Иван Иванов", "Утренние новости", 
+                             "Свежие новости и события дня", 1);
+        
+        Show show2 = new Show("Анна Петрова", "Кулинарные секреты", 
+                             "Мастер-классы по приготовлению блюд", 2);
+        
+        Show show3 = new Show("Сергей Сидоров", "Финансовый обзор", 
+                             "Анализ рынков и инвестиционные советы", 3);
+        
+        // Вывод информации с помощью toString()
+        System.out.println("=== Информация о передачах ===");
+        System.out.println(show1);
+        System.out.println();
+        System.out.println(show2);
+        System.out.println();
+        System.out.println(show3);
+        System.out.println();
+        
+        // Демонстрация работы геттеров
+        System.out.println("=== Использование геттеров ===");
+        System.out.println("Название второй передачи: " + show2.getName());
+        System.out.println("Ведущий третьей передачи: " + show3.getAuthor());
+        System.out.println("Периодичность первой передачи: " + show1.getPeriodTypeAsString());
+        
+        // Демонстрация работы сеттеров
+        System.out.println("\n=== Использование сеттеров ===");
+        show1.setDescription("Обновленное описание: Новости, интервью и репортажи");
+        show2.setAuthor("Мария Кузнецова");
+        
+        System.out.println("После изменений:");
+        System.out.println(show1);
+        System.out.println();
+        System.out.println(show2);
+        
+        // Пример обработки исключения при неверной периодичности
+        try {
+            Show show4 = new Show("Тест", "Тестовая", "Тест", 5);
+        } catch (IllegalArgumentException e) {
+            System.out.println("\nОшибка: " + e.getMessage());
+        }
+    }
+}

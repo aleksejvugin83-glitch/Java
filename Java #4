@@ -1,0 +1,184 @@
+import java.time.LocalTime;
+import java.util.*;
+
+// Класс для представления телепередачи
+class TVProgram implements Comparable<TVProgram> {
+    private String name;
+    private LocalTime time;
+    private String channel;
+    private String category;
+    
+    public TVProgram(String name, LocalTime time, String channel, String category) {
+        this.name = name;
+        this.time = time;
+        this.channel = channel;
+        this.category = category;
+    }
+    
+    // Геттеры
+    public String getName() { return name; }
+    public LocalTime getTime() { return time; }
+    public String getChannel() { return channel; }
+    public String getCategory() { return category; }
+    
+    @Override
+    public String toString() {
+        return String.format("%s - %s (%s, %s)", 
+            time.toString(), name, channel, category);
+    }
+    
+    // Сравнение по времени (по умолчанию)
+    @Override
+    public int compareTo(TVProgram other) {
+        return this.time.compareTo(other.time);
+    }
+}
+
+// Компараторы для сортировки
+class NameComparator implements Comparator<TVProgram> {
+    @Override
+    public int compare(TVProgram p1, TVProgram p2) {
+        return p1.getName().compareToIgnoreCase(p2.getName());
+    }
+}
+
+class TimeComparator implements Comparator<TVProgram> {
+    @Override
+    public int compare(TVProgram p1, TVProgram p2) {
+        return p1.getTime().compareTo(p2.getTime());
+    }
+}
+
+// Основной класс программы
+public class TVGuide {
+    private List<TVProgram> programs;
+    
+    public TVGuide() {
+        programs = new ArrayList<>();
+    }
+    
+    // Добавление передачи
+    public void addProgram(String name, String timeStr, String channel, String category) {
+        LocalTime time = LocalTime.parse(timeStr);
+        programs.add(new TVProgram(name, time, channel, category));
+    }
+    
+    // Сортировка по названию
+    public void sortByName() {
+        Collections.sort(programs, new NameComparator());
+    }
+    
+    // Сортировка по времени
+    public void sortByTime() {
+        Collections.sort(programs, new TimeComparator());
+    }
+    
+    // Вывод всех передач
+    public void displayPrograms() {
+        if (programs.isEmpty()) {
+            System.out.println("Телепрограмма пуста.");
+            return;
+        }
+        
+        System.out.println("\n=== ТЕЛЕПРОГРАММА ===");
+        System.out.println("Время  | Название передачи | Канал | Категория");
+        System.out.println("------------------------------------------------");
+        
+        for (TVProgram program : programs) {
+            System.out.printf("%-7s | %-17s | %-5s | %s%n",
+                program.getTime().toString(),
+                program.getName(),
+                program.getChannel(),
+                program.getCategory());
+        }
+    }
+    
+    // Поиск передач по названию
+    public List<TVProgram> searchByName(String keyword) {
+        List<TVProgram> result = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+        
+        for (TVProgram program : programs) {
+            if (program.getName().toLowerCase().contains(lowerKeyword)) {
+                result.add(program);
+            }
+        }
+        return result;
+    }
+    
+    // Получение передач на определенное время
+    public List<TVProgram> getProgramsAtTime(String timeStr) {
+        LocalTime time = LocalTime.parse(timeStr);
+        List<TVProgram> result = new ArrayList<>();
+        
+        for (TVProgram program : programs) {
+            if (program.getTime().equals(time)) {
+                result.add(program);
+            }
+        }
+        return result;
+    }
+    
+    // Основной метод для демонстрации
+    public static void main(String[] args) {
+        TVGuide guide = new TVGuide();
+        
+        // Добавляем тестовые данные
+        guide.addProgram("Новости", "19:00", "Первый", "Информация");
+        guide.addProgram("Кино: Матрица", "21:30", "ТНТ", "Фильм");
+        guide.addProgram("Спорт", "18:00", "Матч ТВ", "Спорт");
+        guide.addProgram("Документальный фильм", "20:00", "Культура", "Документалистика");
+        guide.addProgram("Вечерний концерт", "22:00", "Россия 1", "Музыка");
+        guide.addProgram("Утренние новости", "08:00", "Первый", "Информация");
+        
+        System.out.println("Исходная телепрограмма:");
+        guide.displayPrograms();
+        
+        // Сортировка по названию
+        System.out.println("\n\nСортировка по названию передачи:");
+        guide.sortByName();
+        guide.displayPrograms();
+        
+        // Сортировка по времени
+        System.out.println("\n\nСортировка по времени:");
+        guide.sortByTime();
+        guide.displayPrograms();
+        
+        // Поиск передач
+        System.out.println("\n\nПоиск передач с 'новости':");
+        List<TVProgram> searchResults = guide.searchByName("новости");
+        for (TVProgram program : searchResults) {
+            System.out.println(program);
+        }
+        
+        // Получение передач на определенное время
+        System.out.println("\n\nПередачи в 20:00:");
+        List<TVProgram> timeResults = guide.getProgramsAtTime("20:00");
+        for (TVProgram program : timeResults) {
+            System.out.println(program);
+        }
+        
+        // Дополнительная демонстрация
+        System.out.println("\n\n=== ДОПОЛНИТЕЛЬНЫЕ ВОЗМОЖНОСТИ ===");
+        
+        // Фильтрация по категории
+        System.out.println("\nФильтрация спортивных передач:");
+        guide.programs.stream()
+            .filter(p -> p.getCategory().equalsIgnoreCase("спорт"))
+            .forEach(System.out::println);
+            
+        // Группировка по каналам
+        System.out.println("\nГруппировка по каналам:");
+        Map<String, List<TVProgram>> byChannel = new HashMap<>();
+        for (TVProgram program : guide.programs) {
+            byChannel.computeIfAbsent(program.getChannel(), k -> new ArrayList<>()).add(program);
+        }
+        
+        for (Map.Entry<String, List<TVProgram>> entry : byChannel.entrySet()) {
+            System.out.println("\nКанал: " + entry.getKey());
+            for (TVProgram program : entry.getValue()) {
+                System.out.println("  " + program.getTime() + " - " + program.getName());
+            }
+        }
+    }
+}

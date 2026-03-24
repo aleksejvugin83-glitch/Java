@@ -1,0 +1,62 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class ArrayFilter {
+    // Заданное значение (константа)
+    private static final int THRESHOLD = 50;
+    
+    public static void main(String[] args) {
+        // Определяем размер исходного массива
+        int size = 20;
+        
+        // Создаем и заполняем исходный массив случайными значениями
+        int[] originalArray = new int[size];
+        Random random = new Random();
+        
+        System.out.println("Исходный массив:");
+        for (int i = 0; i < size; i++) {
+            originalArray[i] = random.nextInt(100); // случайные числа от 0 до 99
+            System.out.print(originalArray[i] + " ");
+        }
+        System.out.println("\nЗаданное значение (константа): " + THRESHOLD);
+        
+        // Сначала подсчитаем количество элементов, меньших заданного значения
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (originalArray[i] < THRESHOLD) {
+                count++;
+            }
+        }
+        
+        // Создаем массивы для значений и их индексов
+        int[] filteredValues = new int[count];
+        int[] filteredIndices = new int[count];
+        
+        // Заполняем новые массивы
+        int index = 0;
+        for (int i = 0; i < size; i++) {
+            if (originalArray[i] < THRESHOLD) {
+                filteredValues[index] = originalArray[i];
+                filteredIndices[index] = i;
+                index++;
+            }
+        }
+        
+        // Выводим результаты
+        System.out.println("\nЭлементы, меньшие " + THRESHOLD + ":");
+        System.out.println("Значения: " + Arrays.toString(filteredValues));
+        System.out.println("Индексы:  " + Arrays.toString(filteredIndices));
+        
+        // Дополнительный вывод в табличном формате
+        System.out.println("\nПодробный вывод:");
+        System.out.println("Индекс\tЗначение");
+        System.out.println("------\t--------");
+        for (int i = 0; i < filteredValues.length; i++) {
+            System.out.println(filteredIndices[i] + "\t" + filteredValues[i]);
+        }
+    }
+}
+
+
+
+
